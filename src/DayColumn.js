@@ -69,6 +69,7 @@ class DayColumn extends React.Component {
     dayWrapperComponent: elementType,
     eventComponent: elementType,
     eventWrapperComponent: elementType.isRequired,
+    eventContentComponent: elementType.isRequired,
   }
 
   static defaultProps = {
@@ -153,6 +154,7 @@ class DayColumn extends React.Component {
       eventTimeRangeFormat,
       eventTimeRangeStartFormat,
       eventWrapperComponent: EventWrapper,
+      eventContentComponent: EventContentComponent,
       events,
       max,
       messages,
@@ -242,11 +244,9 @@ class DayColumn extends React.Component {
           >
             <div className="rbc-event-label">{label}</div>
             <div className="rbc-event-content">
-              {EventComponent ? (
-                <EventComponent event={event} title={title} />
-              ) : (
-                title
-              )}
+              <EventComponent event={event} title={title}>
+                <EventContentComponent event={event} />
+              </EventComponent>
             </div>
           </div>
         </EventWrapper>

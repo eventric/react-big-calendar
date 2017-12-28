@@ -22,7 +22,7 @@ class ResizableEvent extends React.Component {
   }
 
   render () {
-    const { title, event, connectTopDragSource, connectBottomDragSource, connectLeftDragSource, connectRightDragSource } = this.props;
+    const { event, connectTopDragSource, connectBottomDragSource, connectLeftDragSource, connectRightDragSource } = this.props;
     const [Top, Bottom] = [connectTopDragSource, connectBottomDragSource]
       .map(connectDragSource => {
         return connectDragSource(
@@ -41,12 +41,12 @@ class ResizableEvent extends React.Component {
     return event.allDay ? (
       <div className='rbc-addons-dnd-resizable-month-event'>
         {Left}
-        {title}
+        {this.props.children}
         {Right}
       </div> ) : (
       <div className="rbc-addons-dnd-resizable-event">
         {Top}
-        {title}
+        {this.props.children}
         {Bottom}
       </div>
     );
@@ -100,4 +100,3 @@ export default compose(
     connectRightDragPreview: connect.dragPreview(),
   }))
 )(ResizableEvent)
-

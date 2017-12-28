@@ -223,6 +223,7 @@ export default class TimeGrid extends Component {
           min={dates.merge(date, min)}
           max={dates.merge(date, max)}
           eventComponent={components.event}
+          eventContentComponent={components.eventContent}
           eventWrapperComponent={components.eventWrapper}
           dayWrapperComponent={components.dayWrapper}
           className={cn({ 'rbc-now': dates.eq(date, today, 'day') })}
