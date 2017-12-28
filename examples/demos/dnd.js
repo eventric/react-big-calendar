@@ -2,8 +2,8 @@ import React from 'react'
 import events from '../events'
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd'
-import BigCalendar from 'react-big-calendar'
-import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
+import BigCalendar from '../../src'
+import withDragAndDrop from '../../src/addons/dragAndDrop';
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.less';
 
@@ -35,13 +35,29 @@ class Dnd extends React.Component {
     alert(`${event.title} was dropped onto ${event.start}`);
   }
 
+  resizeEvent = (resizeType, { event, start, end }) => {
+    const { events } = this.state;
+
+    const nextEvents = events.map(existingEvent => {
+      return existingEvent.id == event.id
+        ? { ...existingEvent, start, end }
+        : existingEvent;
+    })
+
+    this.setState({
+      events: nextEvents
+    });
+  }
+
   render(){
     return (
       <DragAndDropCalendar
         selectable
         events={this.state.events}
         onEventDrop={this.moveEvent}
-        defaultView='week'
+        resizable
+        onEventResize={this.resizeEvent}
+        defaultView='month'
         defaultDate={new Date(2015, 3, 12)}
       />
     )

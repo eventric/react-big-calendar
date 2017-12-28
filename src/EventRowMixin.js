@@ -30,7 +30,7 @@ export default {
   defaultProps: {
     segments: [],
     selected: {},
-    slots: 7
+    slots: 7,
   },
 
   renderEvent(props, event) {
