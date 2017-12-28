@@ -556,7 +556,9 @@ class Calendar extends React.Component {
       time: PropTypes.node,
       event: PropTypes.node,
       showMore: PropTypes.func
-    })
+    }),
+
+    currentTimeIndicatorVisible: PropTypes.bool
   };
 
   static defaultProps = {
@@ -577,6 +579,7 @@ class Calendar extends React.Component {
     endAccessor: 'end',
 
     longPressThreshold: 250,
+    currentTimeIndicatorVisible: true,
   };
 
   getViews = () => {

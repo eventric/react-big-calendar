@@ -65,6 +65,8 @@ export default class TimeGrid extends Component {
 
     messages: PropTypes.object,
     components: PropTypes.object.isRequired,
+
+    currentTimeIndicatorVisible: PropTypes.bool
   }
 
   static defaultProps = {
@@ -72,6 +74,7 @@ export default class TimeGrid extends Component {
     min: dates.startOf(new Date(), 'day'),
     max: dates.endOf(new Date(), 'day'),
     scrollToTime: dates.startOf(new Date(), 'day'),
+    currentTimeIndicatorVisible: true,
     /* these 2 are needed to satisfy requirements from TimeColumn required props
      * There is a strange bug in React, using ...TimeColumn.defaultProps causes weird crashes
      */
@@ -177,14 +180,17 @@ export default class TimeGrid extends Component {
     allDayEvents.sort((a, b) => sortEvents(a, b, this.props))
 
     let gutterRef = ref => this._gutters[1] = ref && findDOMNode(ref);
+    this.timeIndicator = null;
 
     return (
       <div className='rbc-time-view'>
 
         {this.renderHeader(range, allDayEvents, width)}
 
-        <div ref='content' className='rbc-time-content'>
-          <div ref='timeIndicator' className='rbc-current-time-indicator' />
+        <div ref={ref => this.content = ref} className='rbc-time-content'>
+          {this.props.currentTimeIndicatorVisible &&
+            <div ref={ref => this.timeIndicator = ref} className='rbc-current-time-indicator' />
+          }
 
           <TimeColumn
             {...this.props}
@@ -375,8 +381,7 @@ export default class TimeGrid extends Component {
 
   applyScroll() {
     if (this._scrollRatio) {
-      const { content } = this.refs;
-      content.scrollTop = content.scrollHeight * this._scrollRatio;
+      this.content.scrollTop = this.content.scrollHeight * this._scrollRatio;
       // Only do this once
       this._scrollRatio = null;
     }
@@ -394,7 +399,7 @@ export default class TimeGrid extends Component {
   checkOverflow() {
     if (this._updatingOverflow) return;
 
-    let isOverflowing = this.refs.content.scrollHeight > this.refs.content.clientHeight;
+    let isOverflowing = this.content.scrollHeight > this.content.clientHeight;
 
     if (this.state.isOverflowing !== isOverflowing) {
       this._updatingOverflow = true;
@@ -411,20 +416,22 @@ export default class TimeGrid extends Component {
     const secondsGrid = dates.diff(max, min, 'seconds');
     const secondsPassed = dates.diff(now, min, 'seconds');
 
-    const timeIndicator = this.refs.timeIndicator;
+    const timeIndicator = this.timeIndicator;
     const factor = secondsPassed / secondsGrid;
     const timeGutter = this._gutters[this._gutters.length - 1];
 
-    if (timeGutter && now >= min && now <= max) {
-      const pixelHeight = timeGutter.offsetHeight;
-      const offset = Math.floor(factor * pixelHeight);
+    if (timeIndicator) {
+      if (timeGutter && now >= min && now <= max) {
+        const pixelHeight = timeGutter.offsetHeight;
+        const offset = Math.floor(factor * pixelHeight);
 
-      timeIndicator.style.display = 'block';
-      timeIndicator.style[rtl ? 'left' : 'right'] = 0;
-      timeIndicator.style[rtl ? 'right' : 'left'] = timeGutter.offsetWidth + 'px';
-      timeIndicator.style.top = offset + 'px';
-    } else {
-      timeIndicator.style.display = 'none';
+        timeIndicator.style.display = 'block';
+        timeIndicator.style[rtl ? 'left' : 'right'] = 0;
+        timeIndicator.style[rtl ? 'right' : 'left'] = timeGutter.offsetWidth + 'px';
+        timeIndicator.style.top = offset + 'px';
+      } else {
+        timeIndicator.style.display = 'none';
+      }
     }
   }
 
