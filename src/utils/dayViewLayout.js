@@ -2,14 +2,14 @@ import { accessor as get } from './accessors'
 import dates from './dates'
 
 export function startsBefore(date, min) {
-  return dates.lt(dates.merge(min, date), min, 'minutes')
+  return dates.lt(date, min, 'minutes')
 }
 
 export function positionFromDate(date, min, total) {
   if (startsBefore(date, min))
     return 0
 
-  let diff = dates.diff(min, dates.merge(min, date), 'minutes')
+  let diff = dates.diff(min, date, 'minutes')
   return Math.min(diff, total)
 }
 
@@ -171,7 +171,8 @@ let getYStyles = (idx, {
 
   let multiDayEvent
   if (showMultiDayTimes) {
-    multiDayEvent = handleMultiDayEvents(event.title, startDate, endDate, currentDate)
+    // commented out because it wasn't built to handle days of greater than 24 hours
+    // multiDayEvent = handleMultiDayEvents(event.title, startDate, endDate, currentDate)
   }
 
   let start = getSlot(multiDayEvent || event, startAccessor, min, totalMin)

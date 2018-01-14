@@ -25,7 +25,7 @@ function snapToSlot(date, step) {
 }
 
 function startsAfter(date, max) {
-  return dates.gt(dates.merge(max, date), max, 'minutes')
+  return dates.gt(date, max, 'minutes')
 }
 
 class DayColumn extends React.Component {
@@ -106,6 +106,7 @@ class DayColumn extends React.Component {
     } = this.props
 
     this._totalMin = dates.diff(min, max, 'minutes')
+
     let { selecting, startSlot, endSlot } = this.state
     let slotStyle = this._slotStyle(startSlot, endSlot)
 

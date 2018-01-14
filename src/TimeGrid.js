@@ -147,37 +147,11 @@ export default class TimeGrid extends Component {
         events
       , range
       , width
-      , startAccessor
-      , endAccessor
-      , allDayAccessor
-      , showMultiDayTimes} = this.props;
+    } = this.props;
 
     width = width || this.state.gutterWidth;
 
-    let start = range[0]
-      , end = range[range.length - 1]
-
     this.slots = range.length;
-
-    let allDayEvents = []
-      , rangeEvents = [];
-
-    events.forEach(event => {
-      if (inRange(event, start, end, this.props)) {
-        let eStart = get(event, startAccessor)
-          , eEnd = get(event, endAccessor);
-
-        if (get(event, allDayAccessor)
-          || (dates.isJustDate(eStart) && dates.isJustDate(eEnd))
-          || (!showMultiDayTimes && !dates.eq(eStart, eEnd, 'day'))) {
-          allDayEvents.push(event)
-        } else {
-          rangeEvents.push(event)
-        }
-      }
-    })
-
-    allDayEvents.sort((a, b) => sortEvents(a, b, this.props))
 
     let gutterRef = ref => this._gutters[1] = ref && findDOMNode(ref);
     this.timeIndicator = null;
@@ -185,12 +159,8 @@ export default class TimeGrid extends Component {
     return (
       <div className='rbc-time-view'>
 
-        {this.renderHeader(range, allDayEvents, width)}
-
         <div ref={ref => this.content = ref} className='rbc-time-content'>
-          {this.props.currentTimeIndicatorVisible &&
-            <div ref={ref => this.timeIndicator = ref} className='rbc-current-time-indicator' />
-          }
+          <div ref={ref => this.timeIndicator = ref} className='rbc-current-time-indicator' />
 
           <TimeColumn
             {...this.props}
@@ -200,7 +170,7 @@ export default class TimeGrid extends Component {
             className='rbc-time-gutter'
           />
 
-          {this.renderEvents(range, rangeEvents, this.props.now)}
+          {this.renderEvents(range, events, this.props.now)}
 
         </div>
       </div>
@@ -208,20 +178,16 @@ export default class TimeGrid extends Component {
   }
 
   renderEvents(range, events, today){
-    let { min, max, endAccessor, startAccessor, components } = this.props;
+    let { min, max, components } = this.props;
 
     return range.map((date, idx) => {
-      let daysEvents = events.filter(
-        event => dates.inRange(date,
-          get(event, startAccessor),
-          get(event, endAccessor), 'day')
-      )
+      let daysEvents = events;
 
       return (
         <DayColumn
           {...this.props }
           min={dates.merge(date, min)}
-          max={dates.merge(date, max)}
+          max={dates.add(dates.merge(date, min), dates.diff(max, min), 'milliseconds')}
           eventComponent={components.event}
           eventContentComponent={components.eventContent}
           eventWrapperComponent={components.eventWrapper}
@@ -422,7 +388,7 @@ export default class TimeGrid extends Component {
     const timeGutter = this._gutters[this._gutters.length - 1];
 
     if (timeIndicator) {
-      if (timeGutter && now >= min && now <= max) {
+      if (timeGutter && now >= min && now <= max && this.props.currentTimeIndicatorVisible) {
         const pixelHeight = timeGutter.offsetHeight;
         const offset = Math.floor(factor * pixelHeight);
 

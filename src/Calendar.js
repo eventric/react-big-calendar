@@ -628,6 +628,7 @@ class Calendar extends React.Component {
       , elementProps
       , date: current
       , length
+      , currentTimeIndicatorVisible
       , ...props } = this.props;
 
     formats = defaultFormats(formats)
@@ -672,6 +673,7 @@ class Calendar extends React.Component {
           ref='view'
           {...props}
           {...formats}
+          currentTimeIndicatorVisible={currentTimeIndicatorVisible}
           messages={messages}
           culture={culture}
           formats={undefined}
