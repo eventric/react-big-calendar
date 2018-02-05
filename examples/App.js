@@ -44,6 +44,11 @@ const Example = React.createClass({
       dnd: Dnd,
     }[selected];
 
+    const calendarComponents = {
+      eventContent: props => <div>{props.event.title}</div>,
+      event: props => <div>{props.children}</div>
+    }
+
     return (
       <div className='app'>
       <div className="jumbotron">
@@ -102,7 +107,7 @@ const Example = React.createClass({
                 <strong><i className='fa fa-code'/>{' View example source code'}</strong>
               </a>
             </div>
-           <Current className='demo' />
+           <Current className='demo' components={calendarComponents} endAccessor="end" startAccessor="start" />
           </div>
         </div>
         <div className='docs'>
