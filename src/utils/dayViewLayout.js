@@ -46,7 +46,15 @@ let isSibling = (idx1, idx2, { events, startAccessor, endAccessor, min, totalMin
   let start1 = getSlot(event1, startAccessor, min, totalMin)
   let start2 = getSlot(event2, startAccessor, min, totalMin)
   let end1 = getSlot(event1, endAccessor, min, totalMin)
-  return (Math.abs(start1 - start2) < (step * timeslots) && (start2 < end1 || (start1 === start2 && start2 === end1)))
+  let end2 = getSlot(event2, endAccessor, min, totalMin)
+
+  const startDifference = Math.abs(start1 - start2)
+  const timeslotSize = step * timeslots
+  const isSmallerThanTimeslot = startDifference < timeslotSize
+  const secondStartsBeforeFirstEnds = start2 < end1
+  const sameStartAsEnding = (start1 === start2 && start2 === end1)
+
+  return ( isSmallerThanTimeslot && ( secondStartsBeforeFirstEnds || sameStartAsEnding ))
 }
 
 /**
@@ -57,10 +65,6 @@ let isSibling = (idx1, idx2, { events, startAccessor, endAccessor, min, totalMin
 let isChild = (parentIdx, childIdx, {
   events, startAccessor, endAccessor, min, totalMin, step, timeslots
 }) => {
-  if (isSibling(
-    parentIdx, childIdx,
-    { events, startAccessor, endAccessor, min, totalMin, step, timeslots }
-  )) return false
 
   let parentEnd = getSlot(events[parentIdx], endAccessor, min, totalMin)
   let childStart = getSlot(events[childIdx], startAccessor, min, totalMin)
@@ -218,7 +222,7 @@ export default function getStyledEvents ({
   events: unsortedEvents, startAccessor, endAccessor, min, totalMin, showMultiDayTimes,
   step, timeslots
 }) {
-  let OVERLAP_MULTIPLIER = 0.3
+  let OVERLAP_MULTIPLIER = 0.0
   let events = sort(unsortedEvents, { startAccessor, endAccessor })
   let helperArgs = { events, startAccessor, endAccessor, min, showMultiDayTimes, totalMin, step, timeslots }
   let styledEvents = []
