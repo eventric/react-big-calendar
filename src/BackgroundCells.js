@@ -58,7 +58,7 @@ class BackgroundCells extends React.Component {
   }
 
   render(){
-    let { range, cellWrapperComponent: Wrapper, dayPropGetter, date: currentDate } = this.props;
+    let { range, cellWrapperComponent: Wrapper, dayPropGetter, getNow, date: currentDate } = this.props;
     let { selecting, startIdx, endIdx } = this.state;
     let current = getNow();
 
