@@ -336,3 +336,23 @@ storiesOf('module.Calendar.week', module)
       </div>
     )
   })
+  .add('custom now is the first of the month', () => {
+    const customNow = () => {
+      let now = new Date()
+      now.setDate(1)
+      return now
+    }
+    return (
+      <div style={{ height: 600 }}>
+        <Calendar
+          defaultView="week"
+          getNow={customNow}
+          min={moment('12:00am', 'h:mma').toDate()}
+          max={moment('11:59pm', 'h:mma').toDate()}
+          events={events}
+          onSelectEvent={action('event selected')}
+          defaultDate={new Date()}
+        />
+      </div>
+    )
+  })

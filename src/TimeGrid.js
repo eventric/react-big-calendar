@@ -33,7 +33,7 @@ export default class TimeGrid extends Component {
     ),
     min: PropTypes.instanceOf(Date),
     max: PropTypes.instanceOf(Date),
-    now: PropTypes.instanceOf(Date),
+    getNow: PropTypes.func.isRequired,
 
     scrollToTime: PropTypes.instanceOf(Date),
     eventPropGetter: PropTypes.func,
@@ -75,11 +75,10 @@ export default class TimeGrid extends Component {
     max: dates.endOf(new Date(), 'day'),
     scrollToTime: dates.startOf(new Date(), 'day'),
     currentTimeIndicatorVisible: true,
-    /* these 2 are needed to satisfy requirements from TimeColumn required props
+    /* this are needed to satisfy requirements from TimeColumn required props
      * There is a strange bug in React, using ...TimeColumn.defaultProps causes weird crashes
      */
     type: 'gutter',
-    now: new Date()
   }
 
   constructor(props) {
@@ -235,7 +234,7 @@ export default class TimeGrid extends Component {
             { message(messages).allDay }
           </div>
           <DateContentRow
-            now={now}
+            getNow={getNow}
             minRows={2}
             range={range}
             rtl={this.props.rtl}
@@ -263,7 +262,7 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderCells(range){
-    let { dayFormat, culture, components, dayPropGetter, getDrilldownView } = this.props;
+    let { dayFormat, culture, components, dayPropGetter, getNow, getDrilldownView } = this.props;
     let HeaderComponent = components.header || Header
 
     return range.map((date, i) => {
@@ -271,6 +270,7 @@ export default class TimeGrid extends Component {
       let label = localizer.format(date, dayFormat, culture);
 
       const { className, style: dayStyles } = (dayPropGetter && dayPropGetter(date)) || {};
+      const today = getNow()
 
       let header = (
         <HeaderComponent
@@ -288,7 +288,7 @@ export default class TimeGrid extends Component {
           className={cn(
             'rbc-header',
             className,
-            dates.isToday(date) && 'rbc-today',
+            dates.eq(date, today, 'date') && 'rbc-today',
           )}
           style={Object.assign({}, dayStyles, segStyle(1, this.slots))}
         >
@@ -377,18 +377,18 @@ export default class TimeGrid extends Component {
   }
 
   positionTimeIndicator() {
-    const { rtl, min, max } = this.props
-    const now = new Date();
+    const { rtl, min, max, getNow } = this.props
+    const current = getNow()
 
     const secondsGrid = dates.diff(max, min, 'seconds');
-    const secondsPassed = dates.diff(now, min, 'seconds');
+    const secondsPassed = dates.diff(current, min, 'seconds');
 
     const timeIndicator = this.timeIndicator;
     const factor = secondsPassed / secondsGrid;
     const timeGutter = this._gutters[this._gutters.length - 1];
 
     if (timeIndicator) {
-      if (timeGutter && now >= min && now <= max && this.props.currentTimeIndicatorVisible) {
+      if (timeGutter && current >= min && current <= max && this.props.currentTimeIndicatorVisible) {
         const pixelHeight = timeGutter.offsetHeight;
         const offset = Math.floor(factor * pixelHeight);
 

@@ -17,6 +17,7 @@ class BackgroundCells extends React.Component {
     cellWrapperComponent: elementType,
     container: PropTypes.func,
     dayPropGetter: PropTypes.func,
+    getNow: PropTypes.func.isRequired,
     selectable: PropTypes.oneOf([true, false, 'ignoreEvents']),
     longPressThreshold: PropTypes.number,
 
@@ -59,6 +60,7 @@ class BackgroundCells extends React.Component {
   render(){
     let { range, cellWrapperComponent: Wrapper, dayPropGetter, date: currentDate } = this.props;
     let { selecting, startIdx, endIdx } = this.state;
+    let current = getNow();
 
     return (
       <div className='rbc-row-bg'>
@@ -81,6 +83,7 @@ class BackgroundCells extends React.Component {
                   className,
                   selected && 'rbc-selected-cell',
                   dates.isToday(date) && 'rbc-today',
+                  dates.eq(date, current, 'day') && 'rbc-today',
                   currentDate && dates.month(currentDate) !== dates.month(date) && 'rbc-off-range-bg',
                 )}
               />

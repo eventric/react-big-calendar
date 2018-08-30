@@ -224,7 +224,23 @@ class Calendar extends React.Component {
      * Determines the end date from date prop in the agenda view
      * date prop + length (in number of days) = end date
      */
+
     length: PropTypes.number,
+    /**
+     * Determines the current date/time which is highlighted in the views.
+     *
+     * The value affects which day is shaded and which time is shown as
+     * the current time. It also affects the date used by the Today button in
+     * the toolbar.
+     *
+     * Providing a value here can be useful when you are implementing time zones
+     * using the `startAccessor` and `endAccessor` properties.
+     *
+     * @type {func}
+     * @default () => new Date()
+     */
+    getNow: PropTypes.func,
+
 
     /**
      * Determines whether the toolbar is displayed
@@ -567,7 +583,6 @@ class Calendar extends React.Component {
     toolbar: true,
     view: views.MONTH,
     views: [views.MONTH, views.WEEK, views.DAY, views.AGENDA],
-    date: now,
     step: 30,
     length: 30,
 
@@ -579,6 +594,7 @@ class Calendar extends React.Component {
     endAccessor: 'end',
 
     longPressThreshold: 250,
+    getNow: () => new Date(),
     currentTimeIndicatorVisible: true,
   };
 
@@ -626,6 +642,7 @@ class Calendar extends React.Component {
       , style
       , className
       , elementProps
+      , getNow
       , date: current
       , length
       , currentTimeIndicatorVisible
@@ -649,6 +666,7 @@ class Calendar extends React.Component {
 
     let CalToolbar = components.toolbar || Toolbar
     const label = View.title(current, { formats, culture, length })
+    current = current || getNow()
 
     return (
       <div
@@ -681,6 +699,7 @@ class Calendar extends React.Component {
           date={current}
           length={length}
           components={viewComponents}
+          getNow={getNow}
           getDrilldownView={this.getDrilldownView}
           onNavigate={this.handleNavigate}
           onDrillDown={this.handleDrillDown}
@@ -694,13 +713,14 @@ class Calendar extends React.Component {
   }
 
   handleNavigate = (action, newDate) => {
-    let { view, date, onNavigate, ...props } = this.props;
+    let { view, date, getNow, onNavigate, ...props } = this.props;
     let ViewComponent = this.getView();
 
     date = moveDate(ViewComponent, {
       ...props,
       action,
-      date: newDate || date
+      date: newDate || date,
+      today: getNow(),
     })
 
     onNavigate(date, view, action)

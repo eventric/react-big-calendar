@@ -33,7 +33,7 @@ let propTypes = {
   max: PropTypes.instanceOf(Date),
 
   step: PropTypes.number,
-  now: PropTypes.instanceOf(Date),
+  getNow: PropTypes.func.isRequired,
 
   scrollToTime: PropTypes.instanceOf(Date),
   eventPropGetter: PropTypes.func,
@@ -81,10 +81,6 @@ let propTypes = {
 class MonthView extends React.Component {
   static displayName = 'MonthView'
   static propTypes = propTypes
-
-  static defaultProps = {
-    now: new Date()
-  }
 
   constructor(...args) {
     super(...args)
@@ -160,12 +156,12 @@ class MonthView extends React.Component {
       titleAccessor,
       startAccessor,
       endAccessor,
+      getNow,
       allDayAccessor,
       eventPropGetter,
       dayPropGetter,
       messages,
       selected,
-      now,
       date,
       longPressThreshold,
     } = this.props
@@ -181,7 +177,7 @@ class MonthView extends React.Component {
         ref={weekIdx === 0 ? 'slotRow' : undefined}
         container={this.getContainer}
         className="rbc-month-row"
-        now={now}
+        getNow={getNow}
         date={date}
         range={week}
         events={events}
