@@ -146,6 +146,7 @@ export default class TimeGrid extends Component {
         events
       , range
       , width
+      , getNow
     } = this.props;
 
     width = width || this.state.gutterWidth;
@@ -169,7 +170,7 @@ export default class TimeGrid extends Component {
             className='rbc-time-gutter'
           />
 
-          {this.renderEvents(range, events, this.props.now)}
+          {this.renderEvents(range, events, getNow())}
 
         </div>
       </div>
