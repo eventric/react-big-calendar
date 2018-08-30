@@ -75,7 +75,7 @@ export default class TimeGrid extends Component {
     max: dates.endOf(new Date(), 'day'),
     scrollToTime: dates.startOf(new Date(), 'day'),
     currentTimeIndicatorVisible: true,
-    /* this are needed to satisfy requirements from TimeColumn required props
+    /* This is needed to satisfy requirements from TimeColumn required props
      * There is a strange bug in React, using ...TimeColumn.defaultProps causes weird crashes
      */
     type: 'gutter',
@@ -202,7 +202,7 @@ export default class TimeGrid extends Component {
   }
 
   renderHeader(range, events, width) {
-    let { messages, rtl, selectable, components, now } = this.props;
+    let { messages, rtl, selectable, components, getNow } = this.props;
     let { isOverflowing } = this.state || {};
 
     let style = {};
