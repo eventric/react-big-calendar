@@ -594,6 +594,7 @@ class Calendar extends React.Component {
     endAccessor: 'end',
 
     longPressThreshold: 250,
+    getNow: () => new Date(),
     currentTimeIndicatorVisible: true,
   };
 
@@ -647,7 +648,7 @@ class Calendar extends React.Component {
       , currentTimeIndicatorVisible
       , ...props } = this.props;
 
-    current = getNow ? getNow() : current
+    current = getNow()
 
     formats = defaultFormats(formats)
     messages = message(messages)
