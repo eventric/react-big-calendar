@@ -648,7 +648,7 @@ class Calendar extends React.Component {
       , currentTimeIndicatorVisible
       , ...props } = this.props;
 
-    current = getNow()
+    current = current || getNow()
 
     formats = defaultFormats(formats)
     messages = message(messages)
