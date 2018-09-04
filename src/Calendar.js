@@ -648,6 +648,8 @@ class Calendar extends React.Component {
       , currentTimeIndicatorVisible
       , ...props } = this.props;
 
+    current = getNow() || current
+
     formats = defaultFormats(formats)
     messages = message(messages)
 
@@ -666,7 +668,6 @@ class Calendar extends React.Component {
 
     let CalToolbar = components.toolbar || Toolbar
     const label = View.title(current, { formats, culture, length })
-    current = current || getNow()
 
     return (
       <div
